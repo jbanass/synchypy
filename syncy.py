@@ -15,6 +15,14 @@ def GetCredentials(keyFile):
     
     return creds[0], creds[1], creds[2]
 
+def WipeFTP(connection, destinationDirectory):
+    '''Delete all files within destinationDirectory'''
+    return
+
+def PopulateFTP(connection, distributionDirectory, destinationDirectory):
+    '''Populate a FTP destination with files from distribution'''
+    return
+
 def Deploy(distributionDirectory, destinationDirectory, keyFile):
     user = ''
     key = ''
@@ -27,7 +35,8 @@ def Deploy(distributionDirectory, destinationDirectory, keyFile):
         connection = ftplib.FTP(addr, user, key)
         print("Successfully connected.")
 
-        
+        WipeFTP(connection, destinationDirectory)
+        PopulateFTP(connection, distributionDirectory, destinationDirectory)
 
         connection.close()
     except Exception:
