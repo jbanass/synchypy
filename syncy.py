@@ -22,6 +22,23 @@ def wipe_ftp(connection):
     '''Delete all files within destination_directory'''
     return
 
+def backup_ftp(connection: ftplib.FTP, backup_directory: str, current_directory: list):
+    '''backs up all folders and files in ftp locally'''
+    files = connection.nlst()
+
+    for x in files:
+        if '.' in x[0]:
+            continue
+        try:
+            print('attempting folder change to ' + '/'.join(current_directory) + '/' + x)
+            new_directory = [current_directory] + [x]
+            print("Attempting listing of {}".format('/'.join(new_directory)))
+            print(connection.nlst('/'.join(new_directory)))
+        except Exception:
+            print("It wasn't a directory, it will grab file {}".format('/'.join(current_directory) + '/' + x))
+
+    
+
 def translate_local_to_ftp(files_dict: dict, distribution_directory: str):
     '''Performs directory translation between a nested directory locally to \
      a normalized directory remotely'''
@@ -35,6 +52,10 @@ def translate_local_to_ftp(files_dict: dict, distribution_directory: str):
             return_dict[translated_key] = files_dict[key]
 
     return return_dict
+
+def translate_ftp_to_local(files_dict: dict, backup_directory: str):
+    '''Performs directory translation between a nested directory on remote server to \
+    a normalized directory locally'''
 
 def populate_ftp(connection, distribution_directory):
     '''Populate a FTP destination with files from distribution'''
@@ -76,8 +97,9 @@ def deploy(distribution_directory, key_file):
         connection = ftplib.FTP(addr, user, key)
         print("Successfully connected.")
 
-        wipe_ftp(connection)
-        populate_ftp(connection, distribution_directory)
+        #wipe_ftp(connection)
+        backup_ftp(connection, 'C:\\', '')
+        #populate_ftp(connection, distribution_directory)
 
         connection.close()
     except Exception:
